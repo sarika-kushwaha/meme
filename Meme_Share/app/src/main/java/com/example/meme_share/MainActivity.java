@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -28,7 +27,7 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
     ImageView memeImage;
     Button ShareButton , NextButton;
-    ProgressBar progressBar;
+   
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +37,8 @@ public class MainActivity extends AppCompatActivity {
         memeImage = findViewById(R.id.imageView);
         ShareButton = findViewById(R.id.ShareButton);
         NextButton =findViewById(R.id.NextButton);
-        progressBar = findViewById(R.id.progressBar);
     }
     public void loadMeme(){
-        progressBar.setVisibility(ProgressBar.VISIBLE);
 
         String url = "https://meme-api.herokuapp.com/gimme";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -49,20 +46,8 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 try {
                     String url = response.getString("url");
-                    //Glide.with(MainActivity.this).load(url).into(memeImage);
-                    Glide.with(MainActivity.this).load(url).listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            return false;
-                        }
-                    });
+                    Glide.with(MainActivity.this).load(url).into(memeImage);
+                   
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -78,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     public void share(View view){
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        //intent.putExtra(Intent.EXTRA_TEXT,"This is my meme app");
+        intent.putExtra(Intent.EXTRA_TEXT,"This is my meme app");
         startActivity(intent);
     }
     public void next(View view){
